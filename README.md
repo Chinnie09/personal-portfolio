@@ -3,9 +3,9 @@
 A modern, responsive static personal portfolio website built with **HTML**, **CSS**, and **JavaScript** for the ITS 300-B Midterm Project.
 
 ## 🔗 Live Website
-> **https://<your-username>.github.io/personal-portfolio/**
+> **https://chinnie09.github.io/personal-portfolio/**
 
-*(Replace with your actual URL after deployment.)*
+
 
 ---
 

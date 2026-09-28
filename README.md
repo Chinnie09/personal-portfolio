@@ -1,23 +1,22 @@
 # Chynie Saguban — Personal Portfolio
 
-A modern, responsive static personal portfolio website built with **HTML**, **CSS**, and **JavaScript** for the ITS 300-B Midterm Project.
+A modern, responsive personal portfolio website built with **HTML, CSS, and JavaScript** for the ITS 300-B Midterm Project.
 
 ## 🔗 Live Website
-> **https://chinnie09.github.io/personal-portfolio/**
 
-
+[Visit My Portfolio](https://chinnie09.github.io/personal-portfolio/)
 
 ---
 
 ## ✨ Features
 
 ### Pages
-- **Home** — Name, intro, profile image, call-to-action button
+- **Home** — Name, introduction, profile image, and call-to-action button
 - **About** — Background, education, career goals, interests, and values
 - **Skills** — 10 skills organized into 4 categories (Programming & Database, Design & Multimedia, Productivity & Documentation, Networking)
 - **Projects** — 4 projects with titles, descriptions, images, and technologies
 - **Resume** — Education history, work experience, Cisco Packet Tracer activities, and 6 professional certifications
-- **Contact** — Email, social links, and JS-validated contact form
+- **Contact** — Email, social links, and JavaScript-validated contact form
 
 ### JavaScript Features (7)
 1. Mobile navigation toggle
@@ -26,12 +25,12 @@ A modern, responsive static personal portfolio website built with **HTML**, **CS
 4. Image modal on project cards
 5. Scroll-to-top button
 6. Typing effect on homepage
-7. Active navigation highlighting + scroll reveal animations
+7. Active navigation highlighting and scroll reveal animations
 
 ### Design
-- Gold & black luxury color palette
+- Gold and black luxury color palette
 - Fully responsive (desktop / tablet / mobile)
-- CSS Grid + Flexbox layouts
+- CSS Grid and Flexbox layouts
 - Semantic HTML5 structure
 - Georgia serif typography for an elegant feel
 
@@ -39,21 +38,23 @@ A modern, responsive static personal portfolio website built with **HTML**, **CS
 
 ## 🛠 Technologies Used
 
-- **HTML5** — semantic markup
-- **CSS3** — custom properties (variables), Flexbox, CSS Grid, animations, transitions
-- **JavaScript (ES6)** — DOM manipulation, IntersectionObserver, LocalStorage, form validation
+- **HTML5** — Semantic markup
+- **CSS3** — Custom properties (variables), Flexbox, CSS Grid, animations, and transitions
+- **JavaScript (ES6)** — DOM manipulation, IntersectionObserver, LocalStorage, and form validation
 
 ---
 
 ## 👩‍💻 Author
 
 **Chynie Saguban**
-BS Information Technology (3rd Year)
+
+BS Information Technology (3rd Year)  
 Negros Oriental State University — Bayawan-Sta. Catalina Campus
 
-📧 **Email:** chyniesaguban696@gmail.com
+📧 **Email:** chyniesaguban696@gmail.com  
 📍 **Location:** Bayawan City, Negros Oriental, Philippines
-🔗 **Facebook:** [Chynie Saguban](https://www.facebook.com/chynie.saguban.73)
+
+🔗 **Facebook:** [Chynie Saguban](https://www.facebook.com/chynie.saguban.73)  
 📷 **Instagram:** [@_fschi.n](https://www.instagram.com/_fschi.n)
 
 ---

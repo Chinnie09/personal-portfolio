@@ -47,6 +47,12 @@ GitHub Pages hosts only the static HTML site; it does not run PHP. To run the PH
 
 The local database configuration is ignored by Git and should not be committed.
 
+## Admin Dashboard (in progress)
+
+Import `database/schema.sql`, configure the database connection, then visit `admin/login.php`. No administrator password is seeded in the SQL file. Create an administrator with a unique password hash generated locally using PHP's `password_hash()` and insert the username, hash, name, and email into `admin_users`. Keep the password and database credentials private.
+
+The initial dashboard includes login/logout, counts, skills and project management, message status/deletion, website settings, and profile image upload. Remaining portfolio content modules and public-page database rendering are being added in later development steps.
+
 ## Author
 
 **Chynie Saguban** — BS Information Technology, 3rd Year at Negros Oriental State University — Bayawan-Sta. Catalina Campus

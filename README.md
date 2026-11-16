@@ -26,19 +26,26 @@ A responsive personal portfolio built with HTML, CSS, and JavaScript for the ITS
 - Scroll-reveal animations
 - Contact form input validation
 
-The HTML contact form only validates the entered information in the browser; it does not send or store messages.
+The HTML contact form only validates the entered information in the browser; it does not send or store messages. The PHP contact page uses a PDO prepared statement and a CSRF token to store messages in MySQL.
 
 ## Technologies
 
 - HTML5
 - CSS3, including custom properties, Flexbox, Grid, animations, and transitions
 - JavaScript (ES6), including DOM APIs, `IntersectionObserver`, and local storage
+- PHP with PDO and MySQL for the server-side pages and contact form
 
 ## Run Locally
 
 Open `index.html` in a browser, or serve the project directory with any static web server. The static HTML site does not require a build step or package installation.
 
-GitHub Pages hosts the static HTML site. The PHP files in the repository are separate server-side versions and require backend include files and database configuration that are not included here.
+GitHub Pages hosts only the static HTML site; it does not run PHP. To run the PHP pages locally:
+
+1. Start Apache and MySQL in XAMPP, then import [`database/schema.sql`](./database/schema.sql) in phpMyAdmin.
+2. Copy `includes/config.example.php` to `includes/config.local.php` and update the database credentials.
+3. Ensure the `pdo_mysql` PHP extension is enabled, then open `index.php` through the local Apache server.
+
+The local database configuration is ignored by Git and should not be committed.
 
 ## Author
 

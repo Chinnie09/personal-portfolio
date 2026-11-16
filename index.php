@@ -29,7 +29,7 @@ $settings = getSiteSettings($pdo);
                 <p>
                     <?php echo e($settings['bio'] ?: 'I am Chynie Saguban, currently studying BS Information Technology at Negros Oriental State University – Bayawan-Sta. Catalina Campus. My interests include database systems, educational technology, and data-driven solutions that support student success.'); ?>
                 </p>
-                <a href="projects.php" class="btn">View My Projects</a>
+                <a href="projects.html" class="btn">View My Projects</a>
             </div>
             <div class="hero-image">
                 <img src="<?php echo e($settings['profile_image'] ?: 'images/profile.jpg'); ?>" alt="Chynie Saguban Profile Picture">

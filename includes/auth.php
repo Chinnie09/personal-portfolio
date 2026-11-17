@@ -14,7 +14,9 @@ function isAdminLoggedIn(): bool
 {
     startAppSession();
 
-    return isset($_SESSION['admin_id']) && is_numeric($_SESSION['admin_id']);
+    return isset($_SESSION['admin_id'])
+        && is_numeric($_SESSION['admin_id'])
+        && (int) $_SESSION['admin_id'] > 0;
 }
 
 function requireAdmin(): void

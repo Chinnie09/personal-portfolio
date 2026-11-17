@@ -12,6 +12,8 @@ if (isAdminLoggedIn()) {
 
 $pdo = getDbConnection();
 $error = '';
+$maxLoginAttempts = 5;
+$lockoutSeconds = 15 * 60;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verifyAdminCsrfToken($_POST['csrf_token'] ?? null)) {
@@ -23,20 +25,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($username === '' || $password === '') {
             $error = 'Please enter both username and password.';
         } else {
-            $statement = $pdo->prepare('SELECT id, username, password_hash, full_name FROM admin_users WHERE username = :username LIMIT 1');
-            $statement->execute([':username' => $username]);
-            $admin = $statement->fetch();
+            $attemptKey = hash(
+                'sha256',
+                strtolower($username) . '|' . ($_SERVER['REMOTE_ADDR'] ?? '')
+            );
+            $now = time();
 
-            if ($admin && password_verify($password, $admin['password_hash'])) {
-                session_regenerate_id(true);
-                $_SESSION['admin_id'] = (int) $admin['id'];
-                $_SESSION['admin_name'] = $admin['full_name'];
-                $_SESSION['last_activity'] = time();
-                header('Location: dashboard.php');
-                exit;
+            $cleanup = $pdo->prepare('DELETE FROM admin_login_attempts WHERE last_attempt < :oldest_attempt');
+            $cleanup->execute([':oldest_attempt' => $now - 86400]);
+
+            $attemptQuery = $pdo->prepare(
+                'SELECT failed_attempts, last_attempt FROM admin_login_attempts WHERE attempt_key = :attempt_key'
+            );
+            $attemptQuery->execute([':attempt_key' => $attemptKey]);
+            $loginAttempt = $attemptQuery->fetch();
+
+            $recentAttempts = $loginAttempt
+                && $now - (int) $loginAttempt['last_attempt'] < $lockoutSeconds;
+
+            if ($recentAttempts && (int) $loginAttempt['failed_attempts'] >= $maxLoginAttempts) {
+                $error = 'Too many failed attempts. Please wait 15 minutes before trying again.';
+            } else {
+                $statement = $pdo->prepare('SELECT id, username, password_hash, full_name FROM admin_users WHERE username = :username LIMIT 1');
+                $statement->execute([':username' => $username]);
+                $admin = $statement->fetch();
+
+                if ($admin && password_verify($password, $admin['password_hash'])) {
+                    $clearAttempts = $pdo->prepare('DELETE FROM admin_login_attempts WHERE attempt_key = :attempt_key');
+                    $clearAttempts->execute([':attempt_key' => $attemptKey]);
+
+                    session_regenerate_id(true);
+                    $_SESSION['admin_id'] = (int) $admin['id'];
+                    $_SESSION['admin_name'] = $admin['full_name'];
+                    $_SESSION['last_activity'] = time();
+                    header('Location: dashboard.php');
+                    exit;
+                }
+
+                $failedAttempts = $recentAttempts
+                    ? (int) $loginAttempt['failed_attempts'] + 1
+                    : 1;
+                $saveAttempt = $pdo->prepare(
+                    'INSERT INTO admin_login_attempts (attempt_key, failed_attempts, last_attempt)
+                    VALUES (:attempt_key, :failed_attempts, :last_attempt)
+                    ON DUPLICATE KEY UPDATE failed_attempts = :updated_attempts, last_attempt = :updated_time'
+                );
+                $saveAttempt->execute([
+                    ':attempt_key' => $attemptKey,
+                    ':failed_attempts' => $failedAttempts,
+                    ':last_attempt' => $now,
+                    ':updated_attempts' => $failedAttempts,
+                    ':updated_time' => $now,
+                ]);
+                $error = 'Invalid login credentials. Please try again.';
             }
-
-            $error = 'Invalid login credentials. Please try again.';
         }
     }
 }

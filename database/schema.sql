@@ -18,6 +18,13 @@ CREATE TABLE IF NOT EXISTS admin_users (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS admin_login_attempts (
+    attempt_key CHAR(64) NOT NULL PRIMARY KEY,
+    failed_attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    last_attempt INT UNSIGNED NOT NULL,
+    KEY idx_admin_login_attempts_last_attempt (last_attempt)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS skills (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     category VARCHAR(100) NOT NULL,

@@ -8,12 +8,12 @@ A responsive personal portfolio built with HTML, CSS, and JavaScript for the ITS
 
 ## Pages
 
-- **Home** — Introduction, profile photo, and featured links
-- **About** — Background, education, interests, and career goals
-- **Skills** — Skills grouped into four categories
-- **Projects** — Four academic and personal projects
-- **Resume** — Education, experience, networking activities, and certifications
-- **Contact** — Contact details, social links, and a client-side validated form
+- Home — Introduction, profile photo, and featured links
+- About — Background, education, interests, and career goals
+- Skills — Skills grouped into four categories
+- Projects — Four academic and personal projects
+- Resume — Education, experience, networking activities, and certifications
+- Contact — Contact details, social links, and a client-side validated form
 
 ## Features
 
@@ -46,6 +46,7 @@ GitHub Pages hosts only the static HTML site; it does not run PHP. To run the PH
 3. Ensure the `pdo_mysql` PHP extension is enabled, then open `index.php` through the local Apache server.
 
 The local database configuration is ignored by Git and should not be committed.
+If you already imported the schema, run the `admin_login_attempts` table statement from `database/schema.sql` in phpMyAdmin before using the admin login.
 
 ## Admin Dashboard (in progress)
 
@@ -55,12 +56,12 @@ The initial dashboard includes login/logout, counts, skills and project manageme
 
 ## Author
 
-**Chynie Saguban** — BS Information Technology, 3rd Year at Negros Oriental State University — Bayawan-Sta. Catalina Campus
+Chynie Saguban — BS Information Technology, 3rd Year at Negros Oriental State University — Bayawan-Sta. Catalina Campus
 
-- **Email:** [chyniesaguban696@gmail.com](mailto:chyniesaguban696@gmail.com)
-- **Location:** Bayawan City, Negros Oriental, Philippines
-- **Facebook:** [Chynie Saguban](https://www.facebook.com/chynie.saguban.73)
-- **Instagram:** [@_fschi.n](https://www.instagram.com/_fschi.n)
+- Email: [chyniesaguban696@gmail.com](mailto:chyniesaguban696@gmail.com)
+- Location: Bayawan City, Negros Oriental, Philippines
+- Facebook: [Chynie Saguban](https://www.facebook.com/chynie.saguban.73)
+- Instagram: [@_fschi.n](https://www.instagram.com/_fschi.n)
 
 ## License
 

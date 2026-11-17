@@ -14,9 +14,22 @@ function isAdminLoggedIn(): bool
 {
     startAppSession();
 
-    return isset($_SESSION['admin_id'])
-        && is_numeric($_SESSION['admin_id'])
-        && (int) $_SESSION['admin_id'] > 0;
+    if (
+        !isset($_SESSION['admin_id'])
+        || !is_numeric($_SESSION['admin_id'])
+        || (int) $_SESSION['admin_id'] <= 0
+    ) {
+        return false;
+    }
+
+    $lastActivity = (int) ($_SESSION['last_activity'] ?? 0);
+    if ($lastActivity === 0 || time() - $lastActivity > 1800) {
+        unset($_SESSION['admin_id'], $_SESSION['admin_name'], $_SESSION['last_activity']);
+        return false;
+    }
+
+    $_SESSION['last_activity'] = time();
+    return true;
 }
 
 function requireAdmin(): void

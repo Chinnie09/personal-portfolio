@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 session_regenerate_id(true);
                 $_SESSION['admin_id'] = (int) $admin['id'];
                 $_SESSION['admin_name'] = $admin['full_name'];
+                $_SESSION['last_activity'] = time();
                 header('Location: dashboard.php');
                 exit;
             }

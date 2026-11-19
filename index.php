@@ -15,7 +15,7 @@ $settings = getSiteSettings($pdo);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php renderPublicHeader('index', $settings['name']); ?>
+<?php renderPublicHeader('index', $settings['name'], $settings['logo_image'], $settings['default_theme']); ?>
     <main>
         <section class="hero">
             <div class="hero-text">

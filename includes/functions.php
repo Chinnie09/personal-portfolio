@@ -6,11 +6,50 @@ function e(string|int|float|null $value): string
     return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function savePortfolioImage(array $file, string $prefix): string
+{
+    $allowed = ['image/jpeg' => '.jpg', 'image/png' => '.png', 'image/gif' => '.gif'];
+
+    if (
+        !in_array($prefix, ['profile', 'logo'], true)
+        || !isset($file['error'], $file['tmp_name'], $file['size'])
+        || $file['error'] !== UPLOAD_ERR_OK
+        || !is_string($file['tmp_name'])
+        || !is_uploaded_file($file['tmp_name'])
+    ) {
+        throw new RuntimeException('Upload failed. Please choose a JPG, PNG, or GIF image.');
+    }
+
+    if ((int) $file['size'] > 2 * 1024 * 1024) {
+        throw new RuntimeException('Upload failed. The image must be 2MB or smaller.');
+    }
+
+    $imageInfo = getimagesize($file['tmp_name']);
+    $mime = $imageInfo === false ? '' : $imageInfo['mime'];
+    if ($imageInfo === false || !isset($allowed[$mime])) {
+        throw new RuntimeException('Upload failed. The file is not a supported image.');
+    }
+
+    $targetDir = __DIR__ . '/../uploads';
+    if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
+        throw new RuntimeException('Unable to create the upload directory.');
+    }
+
+    $fileName = $prefix . '_' . bin2hex(random_bytes(16)) . $allowed[$mime];
+    if (!move_uploaded_file($file['tmp_name'], $targetDir . '/' . $fileName)) {
+        throw new RuntimeException('The image could not be saved.');
+    }
+
+    return 'uploads/' . $fileName;
+}
+
 function getSiteSettings(PDO $pdo): array
 {
     $settings = [
         'name' => 'Chynie Saguban',
         'title' => 'Chynie Saguban | IT Student Portfolio',
+        'logo_image' => '',
+        'default_theme' => 'dark',
         'intro' => 'Welcome to my portfolio',
         'tagline' => 'IT Student & Aspiring Data Analyst',
         'bio' => 'I am Chynie Saguban, currently studying BS Information Technology at Negros Oriental State University – Bayawan-Sta. Catalina Campus. My interests include database systems, educational technology, and data-driven solutions that support student success.',
@@ -68,7 +107,12 @@ function getAchievements(PDO $pdo): array
     return $statement->fetchAll();
 }
 
-function renderPublicHeader(string $activePage, string $siteName = 'Chynie Saguban'): void
+function renderPublicHeader(
+    string $activePage,
+    string $siteName = 'Chynie Saguban',
+    string $logoImage = '',
+    string $defaultTheme = 'dark'
+): void
 {
     $pages = [
         'index' => ['Home', 'index.php'],
@@ -79,8 +123,13 @@ function renderPublicHeader(string $activePage, string $siteName = 'Chynie Sagub
         'contact' => ['Contact', 'contact.php'],
     ];
 
-    echo '<header><nav class="navbar">';
-    echo '<div class="logo">' . e($siteName) . '</div>';
+    $theme = $defaultTheme === 'light' ? 'light' : 'dark';
+    echo '<header data-default-theme="' . e($theme) . '"><nav class="navbar">';
+    if ($logoImage !== '') {
+        echo '<div class="logo has-image"><img src="' . e($logoImage) . '" alt="' . e($siteName) . '"></div>';
+    } else {
+        echo '<div class="logo">' . e($siteName) . '</div>';
+    }
     echo '<button class="menu-toggle" id="menu-toggle" type="button" aria-label="Toggle navigation">☰</button>';
     echo '<ul class="nav-links" id="nav-links">';
 

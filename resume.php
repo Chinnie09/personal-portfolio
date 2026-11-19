@@ -17,7 +17,7 @@ $settings = getSiteSettings($pdo);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php renderPublicHeader('resume', $settings['name']); ?>
+<?php renderPublicHeader('resume', $settings['name'], $settings['logo_image'], $settings['default_theme']); ?>
 <main>
     <section class="page-section">
         <div class="section-title">

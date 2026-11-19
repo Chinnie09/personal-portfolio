@@ -47,7 +47,7 @@ $token = generateCsrfToken();
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php renderPublicHeader('contact', $settings['name']); ?>
+<?php renderPublicHeader('contact', $settings['name'], $settings['logo_image'], $settings['default_theme']); ?>
     <main>
         <section class="page-section">
             <div class="section-title">

@@ -84,6 +84,8 @@ CREATE TABLE IF NOT EXISTS messages (
 INSERT INTO site_settings (setting_key, setting_value) VALUES
     ('name', 'Chynie Saguban'),
     ('title', 'Chynie Saguban | IT Student Portfolio'),
+    ('logo_image', ''),
+    ('default_theme', 'dark'),
     ('intro', 'Welcome to my portfolio'),
     ('tagline', 'IT Student & Aspiring Data Analyst'),
     ('bio', 'I am Chynie Saguban, currently studying BS Information Technology at Negros Oriental State University – Bayawan-Sta. Catalina Campus. My interests include database systems, educational technology, and data-driven solutions that support student success.'),

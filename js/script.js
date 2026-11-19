@@ -97,8 +97,10 @@ function applyTheme(theme) {
     }
 }
 
-const savedTheme = localStorage.getItem("theme") || "dark";
-applyTheme(savedTheme);
+const publicHeader = document.querySelector("header");
+const defaultTheme = publicHeader && publicHeader.dataset.defaultTheme === "light" ? "light" : "dark";
+const savedTheme = localStorage.getItem("theme");
+applyTheme(savedTheme === "light" || savedTheme === "dark" ? savedTheme : defaultTheme);
 
 if (themeToggle) {
     themeToggle.addEventListener("click", function () {

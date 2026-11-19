@@ -20,7 +20,7 @@ foreach ($skills as $skill) {
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php renderPublicHeader('skills', $settings['name']); ?>
+<?php renderPublicHeader('skills', $settings['name'], $settings['logo_image'], $settings['default_theme']); ?>
     <main>
         <section class="page-section">
             <div class="section-title">

@@ -15,7 +15,7 @@ $settings = getSiteSettings($pdo);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php renderPublicHeader('projects', $settings['name']); ?>
+<?php renderPublicHeader('projects', $settings['name'], $settings['logo_image'], $settings['default_theme']); ?>
 <main>
     <section class="page-section">
         <div class="section-title">

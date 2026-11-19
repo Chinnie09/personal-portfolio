@@ -13,48 +13,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verifyAdminCsrfToken($_POST['csrf_token'] ?? null)) {
         $error = 'Invalid form request.';
     } else {
-        $fields = ['name', 'title', 'intro', 'tagline', 'bio', 'email', 'location', 'facebook', 'instagram'];
-        foreach ($fields as $field) {
-            $value = trim((string) ($_POST[$field] ?? ''));
-            $statement = $pdo->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (:key, :insert_value) ON DUPLICATE KEY UPDATE setting_value = :update_value');
-            $statement->execute([':key' => $field, ':insert_value' => $value, ':update_value' => $value]);
+        $defaultTheme = $_POST['default_theme'] ?? '';
+        if (!in_array($defaultTheme, ['dark', 'light'], true)) {
+            $error = 'Please choose a valid default theme.';
         }
 
-        if (!empty($_FILES['profile_image']['name'])) {
-            $file = $_FILES['profile_image'];
-            $allowed = ['image/jpeg' => '.jpg', 'image/png' => '.png', 'image/gif' => '.gif'];
-
-            if ($file['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'])) {
-                $error = 'Upload failed: only JPG, PNG, or GIF images are allowed.';
-            } elseif ($file['size'] > 2 * 1024 * 1024) {
-                $error = 'Upload failed: image must be 2MB or smaller.';
-            } else {
-                $imageInfo = getimagesize($file['tmp_name']);
-                $mime = $imageInfo === false ? '' : $imageInfo['mime'];
-
-                if ($imageInfo === false || !isset($allowed[$mime])) {
-                    $error = 'Upload failed: the file is not a supported image.';
-                } else {
-                    $targetDir = __DIR__ . '/../uploads';
-                    if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
-                        throw new RuntimeException('Unable to create the upload directory.');
-                    }
-
-                    $fileName = 'profile_' . bin2hex(random_bytes(16)) . $allowed[$mime];
-                    $targetPath = $targetDir . '/' . $fileName;
-
-                    if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-                        $error = 'The image could not be saved.';
-                    } else {
-                        $relativePath = 'uploads/' . $fileName;
-                        $pdo->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (:key, :insert_value) ON DUPLICATE KEY UPDATE setting_value = :update_value')->execute([':key' => 'profile_image', ':insert_value' => $relativePath, ':update_value' => $relativePath]);
-                        $message = 'Settings updated successfully.';
+        $imageSettings = [];
+        if ($error === '') {
+            foreach (['profile_image' => 'profile', 'logo_image' => 'logo'] as $field => $prefix) {
+                if (!empty($_FILES[$field]['name'])) {
+                    try {
+                        $imageSettings[$field] = savePortfolioImage($_FILES[$field], $prefix);
+                    } catch (RuntimeException $exception) {
+                        $error = $exception->getMessage();
+                        break;
                     }
                 }
             }
         }
 
         if ($error === '') {
+            $fields = ['name', 'title', 'intro', 'tagline', 'bio', 'email', 'location', 'facebook', 'instagram'];
+            foreach ($fields as $field) {
+                $value = trim((string) ($_POST[$field] ?? ''));
+                $statement = $pdo->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (:key, :insert_value) ON DUPLICATE KEY UPDATE setting_value = :update_value');
+                $statement->execute([':key' => $field, ':insert_value' => $value, ':update_value' => $value]);
+            }
+
+            $themeStatement = $pdo->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (:key, :insert_value) ON DUPLICATE KEY UPDATE setting_value = :update_value');
+            $themeStatement->execute([
+                ':key' => 'default_theme',
+                ':insert_value' => $defaultTheme,
+                ':update_value' => $defaultTheme,
+            ]);
+
+            foreach ($imageSettings as $field => $imagePath) {
+                $imageStatement = $pdo->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (:key, :insert_value) ON DUPLICATE KEY UPDATE setting_value = :update_value');
+                $imageStatement->execute([
+                    ':key' => $field,
+                    ':insert_value' => $imagePath,
+                    ':update_value' => $imagePath,
+                ]);
+            }
+
             $message = 'Settings updated successfully.';
         }
     }
@@ -78,7 +79,7 @@ $token = generateAdminCsrfToken();
         .sidebar a:hover { background: #1f2937; }
         .main { flex: 1; padding: 30px; }
         .panel { background: #1f2937; border-radius: 12px; padding: 22px; margin-bottom: 24px; }
-        input, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: #111827; color: white; margin-top: 8px; }
+        input, textarea, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: #111827; color: white; margin-top: 8px; }
         button { padding: 10px 14px; border: none; background: #f4b400; color: #111; border-radius: 8px; font-weight: 700; cursor: pointer; }
         .success { color: #4ade80; }
         .error { color: #f87171; }
@@ -119,6 +120,13 @@ $token = generateAdminCsrfToken();
                             <input name="title" value="<?php echo e($settings['title']); ?>">
                         </div>
                         <div>
+                            <label>Default Appearance</label>
+                            <select name="default_theme">
+                                <option value="dark" <?php echo $settings['default_theme'] === 'dark' ? 'selected' : ''; ?>>Dark</option>
+                                <option value="light" <?php echo $settings['default_theme'] === 'light' ? 'selected' : ''; ?>>Light</option>
+                            </select>
+                        </div>
+                        <div>
                             <label>Intro</label>
                             <input name="intro" value="<?php echo e($settings['intro']); ?>">
                         </div>
@@ -143,8 +151,15 @@ $token = generateAdminCsrfToken();
                             <input name="instagram" value="<?php echo e($settings['instagram']); ?>">
                         </div>
                         <div>
-                            <label>Profile Image</label>
+                            <label>Profile Image (JPG, PNG, or GIF; max 2MB)</label>
                             <input type="file" name="profile_image" accept="image/png,image/jpeg,image/gif">
+                        </div>
+                        <div>
+                            <label>Site Logo (JPG, PNG, or GIF; max 2MB)</label>
+                            <input type="file" name="logo_image" accept="image/png,image/jpeg,image/gif">
+                            <?php if ($settings['logo_image'] !== ''): ?>
+                                <img src="../<?php echo e($settings['logo_image']); ?>" alt="Current site logo" style="max-width: 180px; max-height: 80px; margin-top: 10px;">
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div style="margin-top: 18px;">

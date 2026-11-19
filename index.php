@@ -15,13 +15,13 @@ $settings = getSiteSettings($pdo);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php renderPublicHeader('index'); ?>
+<?php renderPublicHeader('index', $settings['name']); ?>
     <main>
         <section class="hero">
             <div class="hero-text">
                 <p class="small-title"><?php echo e($settings['intro'] ?: 'Welcome to my portfolio'); ?></p>
                 <h1>
-                    Hi, I'm <span><?php echo e('Chynie Saguban'); ?></span>
+                    Hi, I'm <span><?php echo e($settings['name']); ?></span>
                 </h1>
                 <h2>
                     <span id="typing-text"><?php echo e($settings['tagline'] ?: 'IT Student & Aspiring Data Analyst'); ?></span>
@@ -29,10 +29,10 @@ $settings = getSiteSettings($pdo);
                 <p>
                     <?php echo e($settings['bio'] ?: 'I am Chynie Saguban, currently studying BS Information Technology at Negros Oriental State University – Bayawan-Sta. Catalina Campus. My interests include database systems, educational technology, and data-driven solutions that support student success.'); ?>
                 </p>
-                <a href="projects.html" class="btn">View My Projects</a>
+                <a href="projects.php" class="btn">View My Projects</a>
             </div>
             <div class="hero-image">
-                <img src="<?php echo e($settings['profile_image'] ?: 'images/profile.jpg'); ?>" alt="Chynie Saguban Profile Picture">
+                <img src="<?php echo e($settings['profile_image'] ?: 'images/profile.jpg'); ?>" alt="<?php echo e($settings['name']); ?> Profile Picture">
             </div>
         </section>
     </main>

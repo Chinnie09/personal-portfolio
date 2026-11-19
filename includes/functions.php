@@ -9,6 +9,7 @@ function e(string|int|float|null $value): string
 function getSiteSettings(PDO $pdo): array
 {
     $settings = [
+        'name' => 'Chynie Saguban',
         'title' => 'Chynie Saguban | IT Student Portfolio',
         'intro' => 'Welcome to my portfolio',
         'tagline' => 'IT Student & Aspiring Data Analyst',
@@ -39,19 +40,47 @@ function getSkills(PDO $pdo): array
     return $statement->fetchAll();
 }
 
-function renderPublicHeader(string $activePage): void
+function getProjects(PDO $pdo): array
+{
+    $statement = $pdo->query('SELECT title, summary, description, image_url FROM projects ORDER BY sort_order, id');
+
+    return $statement->fetchAll();
+}
+
+function getEducation(PDO $pdo): array
+{
+    $statement = $pdo->query('SELECT title, institution, period, details FROM education ORDER BY sort_order, id');
+
+    return $statement->fetchAll();
+}
+
+function getExperiences(PDO $pdo): array
+{
+    $statement = $pdo->query('SELECT title, company, period, details FROM experiences ORDER BY sort_order, id');
+
+    return $statement->fetchAll();
+}
+
+function getAchievements(PDO $pdo): array
+{
+    $statement = $pdo->query('SELECT title, issuer, issue_date, reference FROM achievements ORDER BY sort_order, id');
+
+    return $statement->fetchAll();
+}
+
+function renderPublicHeader(string $activePage, string $siteName = 'Chynie Saguban'): void
 {
     $pages = [
         'index' => ['Home', 'index.php'],
         'about' => ['About', 'about.php'],
         'skills' => ['Skills', 'skills.php'],
-        'projects' => ['Projects', 'projects.html'],
-        'resume' => ['Resume', 'resume.html'],
+        'projects' => ['Projects', 'projects.php'],
+        'resume' => ['Resume', 'resume.php'],
         'contact' => ['Contact', 'contact.php'],
     ];
 
     echo '<header><nav class="navbar">';
-    echo '<div class="logo">Chynie Saguban</div>';
+    echo '<div class="logo">' . e($siteName) . '</div>';
     echo '<button class="menu-toggle" id="menu-toggle" type="button" aria-label="Toggle navigation">☰</button>';
     echo '<ul class="nav-links" id="nav-links">';
 

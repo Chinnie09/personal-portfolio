@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verifyAdminCsrfToken($_POST['csrf_token'] ?? null)) {
         $error = 'Invalid form request.';
     } else {
-        $fields = ['title', 'intro', 'tagline', 'bio', 'email', 'location', 'facebook', 'instagram'];
+        $fields = ['name', 'title', 'intro', 'tagline', 'bio', 'email', 'location', 'facebook', 'instagram'];
         foreach ($fields as $field) {
             $value = trim((string) ($_POST[$field] ?? ''));
             $statement = $pdo->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (:key, :insert_value) ON DUPLICATE KEY UPDATE setting_value = :update_value');
@@ -29,11 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif ($file['size'] > 2 * 1024 * 1024) {
                 $error = 'Upload failed: image must be 2MB or smaller.';
             } else {
-                $finfo = new finfo(FILEINFO_MIME_TYPE);
-                $mime = $finfo->file($file['tmp_name']);
                 $imageInfo = getimagesize($file['tmp_name']);
+                $mime = $imageInfo === false ? '' : $imageInfo['mime'];
 
-                if (!isset($allowed[$mime]) || $imageInfo === false || $imageInfo['mime'] !== $mime) {
+                if ($imageInfo === false || !isset($allowed[$mime])) {
                     $error = 'Upload failed: the file is not a supported image.';
                 } else {
                     $targetDir = __DIR__ . '/../uploads';
@@ -93,6 +92,9 @@ $token = generateAdminCsrfToken();
             <a href="dashboard.php">Dashboard</a>
             <a href="skills.php">Skills</a>
             <a href="projects.php">Projects</a>
+            <a href="education.php">Education</a>
+            <a href="experience.php">Experience</a>
+            <a href="achievements.php">Achievements</a>
             <a href="messages.php">Messages</a>
             <a href="settings.php">Settings</a>
             <form method="post" action="logout.php">
@@ -108,6 +110,10 @@ $token = generateAdminCsrfToken();
                 <form method="post" action="settings.php" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?php echo e($token); ?>">
                     <div class="field-grid">
+                        <div>
+                            <label>Display Name</label>
+                            <input name="name" maxlength="120" value="<?php echo e($settings['name']); ?>" required>
+                        </div>
                         <div>
                             <label>Website Title</label>
                             <input name="title" value="<?php echo e($settings['title']); ?>">

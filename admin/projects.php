@@ -27,11 +27,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'Please complete all required project fields.';
             } else {
                 $imageValue = $imageUrl !== '' ? $imageUrl : 'images/project1.jpg';
-                if ($id > 0) {
+                if (!empty($_FILES['project_image']['name'])) {
+                    $file = $_FILES['project_image'];
+                    $allowed = ['image/jpeg' => '.jpg', 'image/png' => '.png', 'image/gif' => '.gif'];
+
+                    if ($file['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'])) {
+                        $error = 'Image upload failed. Please choose a JPG, PNG, or GIF image.';
+                    } elseif ($file['size'] > 2 * 1024 * 1024) {
+                        $error = 'Image upload failed. The image must be 2MB or smaller.';
+                    } else {
+                        $imageInfo = getimagesize($file['tmp_name']);
+                        $mime = $imageInfo === false ? '' : $imageInfo['mime'];
+
+                        if ($imageInfo === false || !isset($allowed[$mime])) {
+                            $error = 'Image upload failed. The file is not a supported image.';
+                        } else {
+                            $targetDir = __DIR__ . '/../uploads';
+                            if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
+                                throw new RuntimeException('Unable to create the upload directory.');
+                            }
+
+                            $fileName = 'project_' . bin2hex(random_bytes(16)) . $allowed[$mime];
+                            if (move_uploaded_file($file['tmp_name'], $targetDir . '/' . $fileName)) {
+                                $imageValue = 'uploads/' . $fileName;
+                            } else {
+                                $error = 'The project image could not be saved.';
+                            }
+                        }
+                    }
+                }
+
+                if ($error === '' && $id > 0) {
                     $stmt = $pdo->prepare('UPDATE projects SET title = :title, summary = :summary, description = :description, image_url = :image_url WHERE id = :id');
                     $stmt->execute([':title' => $title, ':summary' => $summary, ':description' => $description, ':image_url' => $imageValue, ':id' => $id]);
                     $message = 'Project updated successfully.';
-                } else {
+                } elseif ($error === '') {
                     $stmt = $pdo->prepare('INSERT INTO projects (title, summary, description, image_url) VALUES (:title, :summary, :description, :image_url)');
                     $stmt->execute([':title' => $title, ':summary' => $summary, ':description' => $description, ':image_url' => $imageValue]);
                     $message = 'Project added successfully.';
@@ -81,6 +111,9 @@ $token = generateAdminCsrfToken();
             <a href="dashboard.php">Dashboard</a>
             <a href="skills.php">Skills</a>
             <a href="projects.php">Projects</a>
+            <a href="education.php">Education</a>
+            <a href="experience.php">Experience</a>
+            <a href="achievements.php">Achievements</a>
             <a href="messages.php">Messages</a>
             <a href="settings.php">Settings</a>
             <form method="post" action="logout.php">
@@ -94,7 +127,7 @@ $token = generateAdminCsrfToken();
             <?php if ($error !== ''): ?><p class="error"><?php echo e($error); ?></p><?php endif; ?>
             <div class="panel">
                 <h2><?php echo $editingProject ? 'Edit Project' : 'Add Project'; ?></h2>
-                <form method="post" action="projects.php">
+                <form method="post" action="projects.php" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?php echo e($token); ?>">
                     <input type="hidden" name="action" value="save">
                     <input type="hidden" name="id" value="<?php echo (int) ($editingProject['id'] ?? 0); ?>">
@@ -106,6 +139,8 @@ $token = generateAdminCsrfToken();
                     <textarea name="description" rows="4" required><?php echo e($editingProject['description'] ?? ''); ?></textarea>
                     <label>Image URL</label>
                     <input type="text" name="image_url" placeholder="images/project1.jpg" value="<?php echo e($editingProject['image_url'] ?? ''); ?>">
+                    <label>Or upload a project image (JPG, PNG, or GIF; max 2MB)</label>
+                    <input type="file" name="project_image" accept="image/jpeg,image/png,image/gif">
                     <p style="margin-top:10px;"><button type="submit"><?php echo $editingProject ? 'Update Project' : 'Add Project'; ?></button></p>
                 </form>
             </div>

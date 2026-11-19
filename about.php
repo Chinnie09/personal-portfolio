@@ -1,10 +1,11 @@
 <?php
-session_start();
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/functions.php';
 
 $pdo = getDbConnection();
 $settings = getSiteSettings($pdo);
+$education = getEducation($pdo);
+$experiences = getExperiences($pdo);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +16,7 @@ $settings = getSiteSettings($pdo);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php renderPublicHeader('about'); ?>
+<?php renderPublicHeader('about', $settings['name']); ?>
     <main>
         <section class="page-section">
             <div class="section-title">
@@ -24,22 +25,22 @@ $settings = getSiteSettings($pdo);
             </div>
             <div class="about-container">
                 <div class="about-text">
-                    <h2>Hello! I'm Chynie Saguban</h2>
-                    <p>
-                        I am a 3rd-year Bachelor of Science in Information Technology student at <strong>Negros Oriental State University – Bayawan-Sta. Catalina Campus</strong>, set to graduate in 2028.
-                    </p>
-                    <p>
-                        My academic journey and work as a part-time tutor have sparked a strong passion for <strong>Database Systems</strong> and <strong>Educational Technology</strong>. I enjoy working with MySQL, designing relational data structures, and analyzing educational workflows to extract meaningful insights.
-                    </p>
-                    <p>
-                        My career objective is to become a successful Data Analyst while developing educational systems that help students learn efficiently and make quality education more accessible.
-                    </p>
-                    <h3>Core Interests & Values</h3>
-                    <ul>
-                        <li><strong>Primary Focus:</strong> Data Analytics, Database Querying (MySQL), & Educational Technology</li>
-                        <li><strong>Work Experience:</strong> Part-Time Tutor & Educational System Development</li>
-                        <li><strong>Community Outreach:</strong> Volunteer / Advocate for organizations supporting and protecting children</li>
-                    </ul>
+                    <h2>Hello! I'm <?php echo e($settings['name']); ?></h2>
+                    <p><?php echo nl2br(e($settings['bio'])); ?></p>
+                    <?php if ($education !== []): ?>
+                        <h3>Education</h3>
+                        <?php foreach ($education as $record): ?>
+                            <p><strong><?php echo e($record['title']); ?></strong><br>
+                                <?php echo e($record['institution']); ?> · <?php echo e($record['period']); ?></p>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    <?php if ($experiences !== []): ?>
+                        <h3>Experience &amp; Activities</h3>
+                        <?php foreach ($experiences as $experience): ?>
+                            <p><strong><?php echo e($experience['title']); ?></strong> — <?php echo e($experience['company']); ?> (<?php echo e($experience['period']); ?>)<br>
+                                <?php echo e($experience['details']); ?></p>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </section>

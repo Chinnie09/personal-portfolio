@@ -5,6 +5,7 @@ require __DIR__ . '/includes/functions.php';
 
 $pdo = getDbConnection();
 $skills = getSkills($pdo);
+$settings = getSiteSettings($pdo);
 $groupedSkills = [];
 foreach ($skills as $skill) {
     $groupedSkills[$skill['category']][] = $skill;
@@ -15,11 +16,11 @@ foreach ($skills as $skill) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skills | Chynie Saguban Portfolio</title>
+    <title>Skills | <?php echo e($settings['title']); ?></title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php renderPublicHeader('skills'); ?>
+<?php renderPublicHeader('skills', $settings['name']); ?>
     <main>
         <section class="page-section">
             <div class="section-title">

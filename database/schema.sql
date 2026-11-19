@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS messages (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO site_settings (setting_key, setting_value) VALUES
+    ('name', 'Chynie Saguban'),
     ('title', 'Chynie Saguban | IT Student Portfolio'),
     ('intro', 'Welcome to my portfolio'),
     ('tagline', 'IT Student & Aspiring Data Analyst'),

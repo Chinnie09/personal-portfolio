@@ -1,5 +1,5 @@
-<FilesMatch "\.(php|php3|php4|php5|phtml|cgi|pl|exe|bat)$">
+<FilesMatch "(?i:\.(php[0-9]*|phtml|phar|pht|phps|cgi|pl|exe|bat)$)">
     Require all denied
 </FilesMatch>
 
-Options -Indexes
+Options -Indexes -ExecCGI

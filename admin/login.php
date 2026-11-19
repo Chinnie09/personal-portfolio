@@ -51,10 +51,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $admin = $statement->fetch();
 
                 if ($admin && password_verify($password, $admin['password_hash'])) {
+                    if (password_needs_rehash($admin['password_hash'], PASSWORD_DEFAULT)) {
+                        $newPasswordHash = password_hash($password, PASSWORD_DEFAULT);
+                        $updatePassword = $pdo->prepare(
+                            'UPDATE admin_users SET password_hash = :password_hash WHERE id = :id'
+                        );
+                        $updatePassword->execute([
+                            ':password_hash' => $newPasswordHash,
+                            ':id' => $admin['id'],
+                        ]);
+                    }
+
                     $clearAttempts = $pdo->prepare('DELETE FROM admin_login_attempts WHERE attempt_key = :attempt_key');
                     $clearAttempts->execute([':attempt_key' => $attemptKey]);
 
                     session_regenerate_id(true);
+                    unset($_SESSION['csrf_token']);
                     $_SESSION['admin_id'] = (int) $admin['id'];
                     $_SESSION['admin_name'] = $admin['full_name'];
                     $_SESSION['last_activity'] = time();

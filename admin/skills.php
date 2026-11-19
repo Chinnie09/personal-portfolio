@@ -78,6 +78,7 @@ $token = generateAdminCsrfToken();
         <aside class="sidebar">
             <h2>Admin</h2>
             <a href="dashboard.php">Dashboard</a>
+            <a href="profile.php">Admin Profile</a>
             <a href="skills.php">Skills</a>
             <a href="projects.php">Projects</a>
             <a href="education.php">Education</a>

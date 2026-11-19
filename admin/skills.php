@@ -80,6 +80,9 @@ $token = generateAdminCsrfToken();
             <a href="dashboard.php">Dashboard</a>
             <a href="skills.php">Skills</a>
             <a href="projects.php">Projects</a>
+            <a href="education.php">Education</a>
+            <a href="experience.php">Experience</a>
+            <a href="achievements.php">Achievements</a>
             <a href="messages.php">Messages</a>
             <a href="settings.php">Settings</a>
             <form method="post" action="logout.php">

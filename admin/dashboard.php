@@ -8,6 +8,9 @@ $pdo = getDbConnection();
 $counts = [
     'skills' => (int) $pdo->query('SELECT COUNT(*) FROM skills')->fetchColumn(),
     'projects' => (int) $pdo->query('SELECT COUNT(*) FROM projects')->fetchColumn(),
+    'education' => (int) $pdo->query('SELECT COUNT(*) FROM education')->fetchColumn(),
+    'experience' => (int) $pdo->query('SELECT COUNT(*) FROM experiences')->fetchColumn(),
+    'achievements' => (int) $pdo->query('SELECT COUNT(*) FROM achievements')->fetchColumn(),
     'messages' => (int) $pdo->query('SELECT COUNT(*) FROM messages')->fetchColumn(),
     'unread' => (int) $pdo->query("SELECT COUNT(*) FROM messages WHERE status = 'unread'")->fetchColumn(),
 ];
@@ -40,6 +43,9 @@ $adminName = $_SESSION['admin_name'] ?? 'Administrator';
             <a href="dashboard.php">Dashboard</a>
             <a href="skills.php">Skills</a>
             <a href="projects.php">Projects</a>
+            <a href="education.php">Education</a>
+            <a href="experience.php">Experience</a>
+            <a href="achievements.php">Achievements</a>
             <a href="messages.php">Messages</a>
             <a href="settings.php">Settings</a>
             <form method="post" action="logout.php">
@@ -57,6 +63,18 @@ $adminName = $_SESSION['admin_name'] ?? 'Administrator';
                 <div class="card">
                     <h3>Projects</h3>
                     <p><?php echo (int) $counts['projects']; ?></p>
+                </div>
+                <div class="card">
+                    <h3>Education</h3>
+                    <p><?php echo (int) $counts['education']; ?></p>
+                </div>
+                <div class="card">
+                    <h3>Experience</h3>
+                    <p><?php echo (int) $counts['experience']; ?></p>
+                </div>
+                <div class="card">
+                    <h3>Achievements</h3>
+                    <p><?php echo (int) $counts['achievements']; ?></p>
                 </div>
                 <div class="card">
                     <h3>Messages</h3>

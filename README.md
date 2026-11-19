@@ -21,7 +21,6 @@ A responsive personal portfolio built with HTML, CSS, and JavaScript for the ITS
 - PHP pages that read portfolio settings, skills, projects, education, experience, and achievements from MySQL
 - Admin CRUD for skills, projects, education, experience, and achievements
 - Admin settings for profile information and profile image uploads
-- Project image uploads validated as JPG, PNG, or GIF files up to 2MB
 - Contact messages saved to MySQL and managed from the dashboard
 - Mobile navigation menu
 - Dark and light themes, with the selected theme saved in local storage
@@ -39,13 +38,6 @@ The HTML contact form only validates the entered information in the browser; it 
 - CSS3, including custom properties, Flexbox, Grid, animations, and transitions
 - JavaScript (ES6), including DOM APIs, `IntersectionObserver`, and local storage
 - PHP with PDO and MySQL for the server-side pages and contact form
-
-## Requirements
-
-- PHP 8.0 or newer with PDO MySQL enabled
-- MySQL or MariaDB
-- Apache or another web server that can run PHP
-- A writable `uploads` directory; Apache deployments must apply the provided `.htaccess` rules there
 
 ## Run Locally
 
